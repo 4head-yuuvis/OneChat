@@ -5,9 +5,11 @@ class UsernameForm extends Component {
     super(props)
     this.state = {
       username: '',
+      password: '',
     }
     this.onSubmit = this.onSubmit.bind(this)
     this.onChange = this.onChange.bind(this)
+    this.onPassoword = this.onPassoword.bind(this)
   }
 
   onSubmit(e) {
@@ -19,19 +21,38 @@ class UsernameForm extends Component {
     this.setState({ username: e.target.value })
   }
 
+  onPassoword(e) {
+    this.setState({ password: e.target.value })
+  }
+
   render() {
+    const styles = {
+      container: {
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '300px',
+      },
+     
+    }
+
     return (
       <div>
-        <div>
+        <div style={styles.container}>
+          <center>
           <h2>What is your username?</h2>
           <form onSubmit={this.onSubmit}>
             <input
               type="text"
-              placeholder="Your full name"
+              placeholder="Username"
               onChange={this.onChange}
             />
+            <input type="test"
+                   placeholder="password"
+                   onChange={this.onPassword} />
             <input type="submit" />
           </form>
+          </center> 
         </div>
       </div>
     )
