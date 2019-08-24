@@ -48,7 +48,7 @@ class SendMessageForm extends Component {
           <form onSubmit={this.onSubmit} style={styles.form}>
             <input
               type="text"
-              placeholder="commit test"
+              placeholder="checking if remote changed"
               onChange={this.onChange}
               value={this.state.text}
               style={styles.input}
