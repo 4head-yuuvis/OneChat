@@ -33,26 +33,23 @@ class UsernameForm extends Component {
         flexDirection: 'column',
         margin: '300px',
       },
-     
+
     }
 
     return (
       <div>
         <div style={styles.container}>
-          <center>
-          <h2>What is your username?</h2>
           <form onSubmit={this.onSubmit}>
-            <input
-              type="text"
-              placeholder="Username"
-              onChange={this.onChange}
-            />
-            <input type="test"
-                   placeholder="password"
-                   onChange={this.onPassword} />
-            <input type="submit" />
-          </form>
-          </center> 
+          <div class="form-group">
+            <label for="exampleInputEmail1">Username</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Username" onChange={this.onChange}/>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"onChange={this.onPassword}/>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
         </div>
       </div>
     )
