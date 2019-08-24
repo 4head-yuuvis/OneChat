@@ -48,7 +48,7 @@ class SendMessageForm extends Component {
           <form onSubmit={this.onSubmit} style={styles.form}>
             <input
               type="text"
-              placeholder="Type a message here then hit ENTER"
+              placeholder="checking if remote changed11111"
               onChange={this.onChange}
               value={this.state.text}
               style={styles.input}
