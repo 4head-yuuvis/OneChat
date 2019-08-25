@@ -4,7 +4,11 @@ import MessageList from './components/MessageList'
 import SendMessageForm from './components/SendMessageForm'
 import TypingIndicator from './components/TypingIndicator'
 import WhosOnlineList from './components/WhosOnlineList'
-const request = require('request');
+var request = require('request');
+const rp = require('request-promise');
+
+
+
 
 class ChatScreen extends Component {
   constructor(props) {
@@ -18,8 +22,10 @@ class ChatScreen extends Component {
       message: ''
       
     }
-    this.sendMessage = this.sendMessage.bind(this)
-    this.sendTypingEvent = this.sendTypingEvent.bind(this)
+    this.sendMessage = this.sendMessage.bind(this);
+    this.sendTypingEvent = this.sendTypingEvent.bind(this);
+    this.executeRequest = this.executeRequest.bind(this);
+    request.get = request.get.bind(this);
   }
 
   sendTypingEvent() {
@@ -34,6 +40,34 @@ class ChatScreen extends Component {
       roomId: this.state.currentRoom.id,
     })
   }
+
+  createRequest = (userLang, message) => {
+    // var corsAttr = new EnableCorsAttribute("*", "*", "*");
+    // config.EnableCors(corsAttr);
+    return{
+      method: 'GET',
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Headers": "application/x-www-form-urlencoded",
+        "Access-Control-Allow-Methods": "GET"
+      },
+      uri: "http://localhost:5000/translate?message=" + encodeURI(message) + "&tgt=" + userLang
+      
+    }
+  };
+
+  executeRequest = (request_object) => {
+    request.get(request_object, function callback (err, httpResponse, body) {
+      if(err) throw err;
+      else {
+        console.log(body);
+        // console.log(this.state.message
+        callback();
+        return body;
+      }
+    });
+  };
 
   // async translate(
   //   str,
@@ -59,23 +93,19 @@ class ChatScreen extends Component {
   //   console.log(`Translation: ${translation}`);
   // }
 
-  createContentRequest(sourceLang, userLang, message) {
-    return{
-      method: 'GET',
-      uri: "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" 
-      + sourceLang + "&tl=" + userLang + "&dt=t&q=" + encodeURI(message)
-    }
-  }
   
-  executeRequest(request_object){
-    request.get(request_object, function callback(err, httpResponse, body) {
-      if(err) throw err;
-      else {
-        console.log(httpResponse.statusCode)
-        console.log(body)
-      }
-    })
-  }
+
+  // readTextFile = file => {
+  //   var rawFile = new XMLHttpRequest();
+  //   rawFile.open("GET", file, false);
+  //   rawFile.onreadystatechange = () => {
+  //               var allText = rawFile.responseText;
+  //               console.log("allText: ", allText);
+  //               this.setState({
+  //                   message: allText
+  //               });
+  //   };
+  // };
 
   componentDidMount() {
     const chatManager = new Chatkit.ChatManager({
@@ -85,8 +115,7 @@ class ChatScreen extends Component {
         url: 'http://localhost:3001/authenticate',
       }),
     })
-    const userLanguage = this.props.currentLanguage
-    
+    const tgt = this.props.currentLanguage
 
     // googleTranslate.getSupportedLanguages("en", function(err, languageCodes) {
     //   getLanguageCodes(languageCodes); // use a callback function to setState
@@ -98,6 +127,7 @@ class ChatScreen extends Component {
 
     // console.log(getLanguageCodes);
 
+    
 
     chatManager
       .connect()
@@ -108,9 +138,25 @@ class ChatScreen extends Component {
           messageLimit: 100,
           hooks: {
             onMessage: message => {
-              var sourceLang = 'auto';
-              var simpleSearchRequest = this.createContentRequest(sourceLang, userLanguage, `"${message.text}"`)
-              this.executeRequest(simpleSearchRequest)
+              var simpleSearchRequest = this.createRequest(tgt, message.text);
+
+              // this.readTextFile("./component/output.txt");
+              var result =  this.executeRequest(simpleSearchRequest)
+
+              // function doHomework(subject, callback) {
+              //   alert(`Starting my ${subject} homework.`);
+              //   callback();
+              // }
+              
+              // doHomework('math', function() {
+              //   alert('Finished my homework');
+              // });
+              
+              
+              console.log(result);
+              message.text = this.state.message;
+              
+              console.log(message);
               this.setState({
                 messages: [...this.state.messages, message],
               })
@@ -137,6 +183,8 @@ class ChatScreen extends Component {
       })
       .catch(error => console.error('error', error))
   }
+
+  
 
   render() {
     const styles = {
