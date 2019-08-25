@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import human from './blueperson.png';
 
 class WhosOnlineList extends Component {
   renderUsers() {
@@ -8,7 +9,7 @@ class WhosOnlineList extends Component {
           if (user.id === this.props.currentUser.id) {
             return (
               <WhosOnlineListItem key={index} presenceState="online">
-                {user.name} (You)
+                 {user.name} <img src={human} width="15" height="15"/>
               </WhosOnlineListItem>
             )
           }
