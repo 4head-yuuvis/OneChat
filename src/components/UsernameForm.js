@@ -232,7 +232,7 @@ class UsernameForm extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-    this.props.onSubmit(this.state.username)
+    this.props.onSubmit(this.state.username, this.state.password, this.state.language)
   }
 
   onChange(e) {
@@ -274,6 +274,12 @@ class UsernameForm extends Component {
           <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"onChange={this.passwordOnChange}/>
+          </div>
+          <div class="form-group">
+            <label for="exampleSelectLanguage1">Lanugage</label>
+            <select class="form-control" onChange={this.languageOnChange}>
+              { _.range(1, Object.keys(langs).length + 1).map(value => <option key={langs_keys[value]} value={langs_keys[value]}>{langs[langs_keys[value]]}</option>) }
+            </select>
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>

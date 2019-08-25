@@ -4,6 +4,7 @@ import MessageList from './components/MessageList'
 import SendMessageForm from './components/SendMessageForm'
 import TypingIndicator from './components/TypingIndicator'
 import WhosOnlineList from './components/WhosOnlineList'
+const request = require('request');
 
 class ChatScreen extends Component {
   constructor(props) {
@@ -13,6 +14,9 @@ class ChatScreen extends Component {
       currentRoom: {},
       messages: [],
       usersWhoAreTyping: [],
+      languageCodes: [],
+      message: ''
+      
     }
     this.sendMessage = this.sendMessage.bind(this)
     this.sendTypingEvent = this.sendTypingEvent.bind(this)
@@ -31,6 +35,48 @@ class ChatScreen extends Component {
     })
   }
 
+  // async translate(
+  //   str,
+  //   lang
+  // ) {
+  //   // [START translate_quickstart]
+  //   // Imports the Google Cloud client library
+  //   const {Translate} = require('@google-cloud/translate');
+  //   const projectId = 'onechat-1566682458777'; // Your GCP Project Id
+  //   // Instantiates a client
+  //   const translate = new Translate({projectId});
+  
+  //   // The text to translate
+  //   const text = str;
+  
+  //   // The target language
+  //   const target = lang;
+  
+  //   // Translates some text into Russian
+  //   const [translation] = await translate.translate(text, target);
+  //   return translation;
+  //   console.log(`Text: ${text}`);
+  //   console.log(`Translation: ${translation}`);
+  // }
+
+  createContentRequest(sourceLang, userLang, message) {
+    return{
+      method: 'GET',
+      uri: "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" 
+      + sourceLang + "&tl=" + userLang + "&dt=t&q=" + encodeURI(message)
+    }
+  }
+  
+  executeRequest(request_object){
+    request.get(request_object, function callback(err, httpResponse, body) {
+      if(err) throw err;
+      else {
+        console.log(httpResponse.statusCode)
+        console.log(body)
+      }
+    })
+  }
+
   componentDidMount() {
     const chatManager = new Chatkit.ChatManager({
       instanceLocator: 'v1:us1:31bc6e8a-6066-40aa-8b36-6e80e275cecc',
@@ -39,6 +85,19 @@ class ChatScreen extends Component {
         url: 'http://localhost:3001/authenticate',
       }),
     })
+    const userLanguage = this.props.currentLanguage
+    
+
+    // googleTranslate.getSupportedLanguages("en", function(err, languageCodes) {
+    //   getLanguageCodes(languageCodes); // use a callback function to setState
+    // });
+
+    // const getLanguageCodes = languageCodes => {
+    //   this.setState({ languageCodes });
+    // };
+
+    // console.log(getLanguageCodes);
+
 
     chatManager
       .connect()
@@ -49,6 +108,9 @@ class ChatScreen extends Component {
           messageLimit: 100,
           hooks: {
             onMessage: message => {
+              var sourceLang = 'auto';
+              var simpleSearchRequest = this.createContentRequest(sourceLang, userLanguage, `"${message.text}"`)
+              this.executeRequest(simpleSearchRequest)
               this.setState({
                 messages: [...this.state.messages, message],
               })
