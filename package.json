@@ -3,18 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@google-cloud/translate": "^4.1.3",
     "@pusher/chatkit-client": "^1.0.2",
     "@pusher/chatkit-server": "^1.0.1",
     "ajv": "^6.10.2",
     "bootstrap": "^4.3.1",
     "cors": "^2.8.4",
     "express": "^4.16.3",
+<<<<<<< HEAD
+=======
+    "google-translate": "^2.3.0",
+>>>>>>> af2730e7816e85b740bb7c58f3e55a2b2987f674
     "google-translate-api": "^2.3.0",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
     "react": "^16.2.0",
+    "react-cookies": "^0.1.1",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "request-promise": "^4.2.4"
   },
   "devDependencies": {
     "concurrently": "^3.5.1"
